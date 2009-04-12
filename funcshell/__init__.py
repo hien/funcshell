@@ -83,6 +83,15 @@ class Shell(object):
     except Func_Client_Exception, e:
       self.__handle_error(Func_Client_Exception.__name__, e)
 
+  def command_shell(self):
+    if not self.__ready(): return
+    from funcshell.utils import CommandShell
+    shell = CommandShell(callback=self.command_run)
+    try:
+      shell.cmdloop()
+    except KeyboardInterrupt:
+      print ''
+
 def exit():
   sys.exit(0)
 
@@ -121,6 +130,9 @@ def run():
         command=Variable(pattern=r'.*')(
           Action(help='Full command', callback=shell.command_run),
         ),
+      ),
+      shell=Node(help='Run a command shell')(
+        Action(help='Run a command shell', callback=shell.command_shell),
       ),
     ),
   )
