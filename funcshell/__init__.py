@@ -49,21 +49,21 @@ class Shell(object):
     print 'Error: %s' % error_type
     print error_text
 
-  def get_client(self):
+  def get_clients(self):
     if self.client_list:
-      print templates.render('get_client', self.client_list)
+      print templates.render('get_clients', self.client_list)
 
-  def set_client(self, client_set):
-    self.client_list = set(self.find_minions(client_set))
+  def set_clients(self, clients_set):
+    self.client_list = set(self.find_minions(clients_set))
 
-  def add_client(self, client_add):
-    self.client_list.update(self.find_minions(client_add[2:]))
+  def add_clients(self, clients_add):
+    self.client_list.update(self.find_minions(clients_add[2:]))
 
-  def remove_client(self, client_remove):
-    self.client_list.difference_update(self.find_minions(client_remove[2:]))
+  def remove_clients(self, clients_remove):
+    self.client_list.difference_update(self.find_minions(clients_remove[2:]))
 
-  def find_minions(self, client_glob):
-    return fc.Minions(client_glob).get_all_hosts()
+  def find_minions(self, clients_glob):
+    return fc.Minions(clients_glob).get_all_hosts()
 
   def command_exists(self, command):
     if not self.__ready(): return
@@ -103,20 +103,20 @@ def run():
       Action(help='Exit the shell', callback=exit),
     ),
     get=Node(help='Get information about the current session')(
-      client=Node(help='Get client list')(
-        Action(help='Get client list', callback=shell.get_client),
+      clients=Node(help='Get client list')(
+        Action(help='Get client list', callback=shell.get_clients),
       ),
     ),
     set=Node(help='Define settings for the current session')(
-      client=Node(help='Manage session clients')(
-        client_set=Variable(pattern=r'%s' % re_hostname, help='Use a host or group name to add clients to the client list')(
-          Action(help='Set client list host(s)', callback=shell.set_client),
+      clients=Node(help='Manage session clients')(
+        clients_set=Variable(pattern=r'%s' % re_hostname, help='Use a host or group name to add clients to the client list')(
+          Action(help='Set client list host(s)', callback=shell.set_clients),
         ),
-        client_add=Variable(pattern=r'\+\ %s' % re_hostname, help='Use a + before a host or group name to add clients to the client list')(
-          Action(help='Add host(s) to client list', callback=shell.add_client),
+        clients_add=Variable(pattern=r'\+\ %s' % re_hostname, help='Use a + before a host or group name to add clients to the client list')(
+          Action(help='Add host(s) to client list', callback=shell.add_clients),
         ),
-        client_remove=Variable(pattern=r'-\ %s' % re_hostname, help='Use a - before a host or group name to remove clients from the client list')(
-          Action(help='Remove host(s) from client list', callback=shell.remove_client),
+        clients_remove=Variable(pattern=r'-\ %s' % re_hostname, help='Use a - before a host or group name to remove clients from the client list')(
+          Action(help='Remove host(s) from client list', callback=shell.remove_clients),
         ),
       ),
     ),
