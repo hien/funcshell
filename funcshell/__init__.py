@@ -24,7 +24,7 @@ try:
 except IOError:
   print 'You do not have the required permissions to run funcshell.'
   sys.exit(1)
-from funcshell import display
+from funcshell import templates
 
 class Shell(object):
   def __init__(self):
@@ -51,7 +51,7 @@ class Shell(object):
 
   def get_client(self):
     if self.client_list:
-      print display.get_client(self.client_list)
+      print templates.render('get_client', self.client_list)
 
   def set_client(self, client_set):
     self.client_list = set(self.find_minions(client_set))
@@ -70,7 +70,7 @@ class Shell(object):
     client = self.__client()
     try:
       results = client.command.exists(command)
-      print display.command_exists(results)
+      print templates.render('command_exists', results)
     except Func_Client_Exception, e:
       self.__handle_error(Func_Client_Exception, e)
 
@@ -79,7 +79,7 @@ class Shell(object):
     client = self.__client()
     try:
       results = client.command.run(command)
-      print display.command_run(results)
+      print templates.render('command_run', results)
     except Func_Client_Exception, e:
       self.__handle_error(Func_Client_Exception.__name__, e)
 

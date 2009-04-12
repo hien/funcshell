@@ -1,0 +1,3 @@
+{%- for client in data -%}
+{{ client }}{% if not loop.last %};{% endif -%}
+{%- endfor -%}

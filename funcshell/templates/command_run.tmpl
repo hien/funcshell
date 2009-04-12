@@ -1,0 +1,8 @@
+{%- for host, (code, stout, sterr) in data.items() -%}
+<== {{ host }} :: {{ code }} ==>
+{% if code -%}
+  {{ sterr }}
+{%- else -%}
+  {{ stout }}
+{%- endif -%}
+{% endfor %}

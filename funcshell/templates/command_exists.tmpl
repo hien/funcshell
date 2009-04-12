@@ -1,0 +1,8 @@
+{%- for host, exists in data.items() -%}
+<== {{ host }} ==>
+{% if exists -%}
+  yes
+{%- else -%}
+  no
+{%- endif %}
+{% endfor %}
