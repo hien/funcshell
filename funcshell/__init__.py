@@ -57,10 +57,10 @@ class Shell(object):
     self.client_list = set(self.find_minions(client_set))
 
   def add_client(self, client_add):
-    self.client_list.update(self.find_minions(client_add[1:]))
+    self.client_list.update(self.find_minions(client_add[2:]))
 
   def remove_client(self, client_remove):
-    self.client_list.difference_update(self.find_minions(client_remove[1:]))
+    self.client_list.difference_update(self.find_minions(client_remove[2:]))
 
   def find_minions(self, client_glob):
     return fc.Minions(client_glob).get_all_hosts()
@@ -96,7 +96,7 @@ def exit():
   sys.exit(0)
 
 def run():
-  re_hostname = r'[a-z0-9-.*]+'
+  re_hostname = r'(?:@?[a-zA-Z0-9*]+[a-zA-Z0-9-.*;]*){1,}'
   shell = Shell()
   grammar = Grammar(
     exit=Node(help='Exit the shell')(
@@ -109,13 +109,13 @@ def run():
     ),
     set=Node(help='Define settings for the current session')(
       client=Node(help='Manage session clients')(
-        client_set=Variable(pattern=r'[@]?%s' % re_hostname, help='Use a host or group name to add clients to the client list')(
+        client_set=Variable(pattern=r'%s' % re_hostname, help='Use a host or group name to add clients to the client list')(
           Action(help='Set client list host(s)', callback=shell.set_client),
         ),
-        client_add=Variable(pattern=r'\+@?%s' % re_hostname, help='Use a + before a host or group name to add clients to the client list')(
+        client_add=Variable(pattern=r'\+\ %s' % re_hostname, help='Use a + before a host or group name to add clients to the client list')(
           Action(help='Add host(s) to client list', callback=shell.add_client),
         ),
-        client_remove=Variable(pattern=r'-@?%s' % re_hostname, help='Use a - before a host or group name to remove clients from the client list')(
+        client_remove=Variable(pattern=r'-\ %s' % re_hostname, help='Use a - before a host or group name to remove clients from the client list')(
           Action(help='Remove host(s) from client list', callback=shell.remove_client),
         ),
       ),
