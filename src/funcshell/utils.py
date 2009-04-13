@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import cmd
 
 class CommandShell(cmd.Cmd):

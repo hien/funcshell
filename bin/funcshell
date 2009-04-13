@@ -1,6 +1,0 @@
-#!/bin/env python
-
-from funcshell import run
-
-if __name__ == '__main__':
-  run()
