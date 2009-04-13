@@ -6,7 +6,7 @@ setup(
   name='funcshell',
   version='0.0.1',
   description='A CLI interface to Func',
-  long_description='funchshell is a CLI interface to the Func.',
+  long_description='funchshell is a CLI interface to Func.',
   license='MIT',
   platforms='Platform Independent',
   author='Silas Sewell',

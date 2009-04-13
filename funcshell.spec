@@ -20,7 +20,7 @@ Requires:       python-jinja2
 Requires:       python-setuptools
 
 %description
-funchshell is a CLI interface to the Func.
+funchshell is a CLI interface to Func.
 
 %prep
 %setup -q
