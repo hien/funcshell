@@ -14,9 +14,6 @@ setup(
   url='http://code.google.com/p/silassewell/wiki/funcshell',
   download_url='http://silassewell.googlecode.com/files/funcshell-0.0.1.tar.gz',
   packages=['funcshell'],
-  package_data = {
-    'funcshell': ['templates/*.tmpl'],
-  },
   entry_points = {
     'console_scripts': [
       'funcshell = funcshell:main',

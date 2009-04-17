@@ -8,73 +8,55 @@ try:
 except IOError:
   print 'You do not have the required permissions to run funcshell.'
   sys.exit(1)
-from funcshell import templates
+from funcshell import modules
+
+class Client(object):
+  def __init__(self):
+    self.list = set()
+
+  def add(self, client_list):
+    self.list.update(self.minions(client_list))
+
+  def remove(self, client_list):
+    self.list.difference_update(self.minions(client_list))
+
+  def set(self, client_list):
+    self.list = set(self.minions(client_list))
+
+  def get(self):
+    client_list = list(self.list)
+    client_list.sort()
+    return client_list
+
+  def join(self, join_str=';'):
+    return join_str.join(self.get())
+
+  def overlord(self, hosts=None):
+    return fc.Overlord(self.join())
+
+  def ready(self):
+    return bool(self.list)
+
+  def minions(self, clients_glob):
+    return fc.Minions(clients_glob).get_all_hosts()
 
 class Shell(object):
   def __init__(self):
-    self.client_list = set()
-
-  def __client(self, hosts=None):
-    hosts_str = self.__client_list_str(hosts)
-    return fc.Overlord(hosts_str)
-
-  def __client_list_str(self, hosts=None):
-    if not hosts:
-      hosts = self.client_list
-    return ';'.join(hosts)
-
-  def __ready(self):
-    if not self.client_list:
-      print 'Client list required.'
-    else:
-      return True
-
-  def __handle_error(self, error_type, error_text):
-    print 'Error: %s' % error_type
-    print error_text
+    self.client = Client()
+    self.command = modules.Command(self.client.overlord)
 
   def get_clients(self):
-    if self.client_list:
-      print templates.render('get_clients', self.client_list)
+    if self.client.ready():
+      print self.client.join('\n')
 
   def set_clients(self, clients_set):
-    self.client_list = set(self.find_minions(clients_set))
+    self.client.set(clients_set)
 
   def add_clients(self, clients_add):
-    self.client_list.update(self.find_minions(clients_add[2:]))
+    self.client.add(clients_add[2:])
 
   def remove_clients(self, clients_remove):
-    self.client_list.difference_update(self.find_minions(clients_remove[2:]))
-
-  def find_minions(self, clients_glob):
-    return fc.Minions(clients_glob).get_all_hosts()
-
-  def command_exists(self, command):
-    if not self.__ready(): return
-    client = self.__client()
-    try:
-      results = client.command.exists(command)
-      print templates.render('command_exists', results)
-    except Func_Client_Exception, e:
-      self.__handle_error(Func_Client_Exception, e)
-
-  def command_run(self, command):
-    if not self.__ready(): return
-    client = self.__client()
-    try:
-      results = client.command.run(command)
-      print templates.render('command_run', results)
-    except Func_Client_Exception, e:
-      self.__handle_error(Func_Client_Exception.__name__, e)
-
-  def command_shell(self):
-    if not self.__ready(): return
-    from funcshell.utils import CommandShell
-    shell = CommandShell(callback=self.command_run)
-    try:
-      shell.cmdloop()
-    except KeyboardInterrupt:
-      print ''
+    self.client.remove(clients_remove[2:])
 
 def exit():
   sys.exit(0)
@@ -107,16 +89,16 @@ def main():
     command=Node(help='Module to interact with remote shells')(
       exists=Node(help='Check if a command exists')(
         command=Variable(pattern=r'.*')(
-          Action(help='Command name', callback=shell.command_exists),
+          Action(help='Command name', callback=shell.command.exists),
         ),
       ),
       run=Node(help='Run a command')(
         command=Variable(pattern=r'.*')(
-          Action(help='Full command', callback=shell.command_run),
+          Action(help='Full command', callback=shell.command.run),
         ),
       ),
       shell=Node(help='Run a command shell')(
-        Action(help='Run a command shell', callback=shell.command_shell),
+        Action(help='Run a command shell', callback=shell.command.shell),
       ),
     ),
   )

@@ -16,7 +16,6 @@ BuildRequires:  python-devel
 BuildRequires:  python-setuptools
 Requires:       func
 Requires:       python-cly
-Requires:       python-jinja2
 Requires:       python-setuptools
 
 %description

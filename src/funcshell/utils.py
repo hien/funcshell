@@ -19,6 +19,9 @@ class CommandShell(cmd.Cmd):
   def do_exit(self, line):
     return True
 
-  def help_exit(self, line): self.default(line)
-  def help_help(self, line): self.default(line)
+  def help_exit(self):
+    print 'Type exit to quit the shell.'
+
+  def do_help(self, line): self.help_exit()
+  def help_help(self): pass
   def emptyline(self): pass
