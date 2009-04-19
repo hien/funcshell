@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import cly
 import sys
-from cly import *
 try:
   import func.overlord.client as fc
   from func.CommonErrors import Func_Client_Exception
@@ -43,7 +43,38 @@ class Client(object):
 class Shell(object):
   def __init__(self):
     self.client = Client()
-    self.command = modules.Command(self.client.overlord)
+    self.grammar = cly.Grammar()
+    self._grammar()
+    self.command = modules.Command(self.client, self.grammar)
+
+  def _grammar(self):
+    re_hostname = r'(?:@?[a-zA-Z0-9*]+[a-zA-Z0-9-.*;]*){1,}'
+    self.grammar(
+      exit=cly.Node(help='Exit the shell')(
+        cly.Action(help='Exit the shell', callback=self.exit),
+      ),
+      get=cly.Node(help='Get information about the current session')(
+        clients=cly.Node(help='Get client list')(
+          cly.Action(help='Get client list', callback=self.get_clients),
+        ),
+      ),
+      set=cly.Node(help='Define settings for the current session')(
+        clients=cly.Node(help='Manage session clients')(
+          clients_set=cly.Variable(pattern=r'%s' % re_hostname, help='Use a host or group name to add clients to the client list')(
+            cly.Action(help='Set client list host(s)', callback=self.set_clients),
+          ),
+          clients_add=cly.Variable(pattern=r'\+\ %s' % re_hostname, help='Use a + before a host or group name to add clients to the client list')(
+            cly.Action(help='Add host(s) to client list', callback=self.add_clients),
+          ),
+          clients_remove=cly.Variable(pattern=r'-\ %s' % re_hostname, help='Use a - before a host or group name to remove clients from the client list')(
+            cly.Action(help='Remove host(s) from client list', callback=self.remove_clients),
+          ),
+        ),
+      ),
+    )
+
+  def exit():
+    sys.exit(0)
 
   def get_clients(self):
     if self.client.ready():
@@ -58,48 +89,9 @@ class Shell(object):
   def remove_clients(self, clients_remove):
     self.client.remove(clients_remove[2:])
 
-def exit():
-  sys.exit(0)
+  def run(self):
+    cly.interact(self.grammar, application='funcshell')
 
 def main():
-  re_hostname = r'(?:@?[a-zA-Z0-9*]+[a-zA-Z0-9-.*;]*){1,}'
   shell = Shell()
-  grammar = Grammar(
-    exit=Node(help='Exit the shell')(
-      Action(help='Exit the shell', callback=exit),
-    ),
-    get=Node(help='Get information about the current session')(
-      clients=Node(help='Get client list')(
-        Action(help='Get client list', callback=shell.get_clients),
-      ),
-    ),
-    set=Node(help='Define settings for the current session')(
-      clients=Node(help='Manage session clients')(
-        clients_set=Variable(pattern=r'%s' % re_hostname, help='Use a host or group name to add clients to the client list')(
-          Action(help='Set client list host(s)', callback=shell.set_clients),
-        ),
-        clients_add=Variable(pattern=r'\+\ %s' % re_hostname, help='Use a + before a host or group name to add clients to the client list')(
-          Action(help='Add host(s) to client list', callback=shell.add_clients),
-        ),
-        clients_remove=Variable(pattern=r'-\ %s' % re_hostname, help='Use a - before a host or group name to remove clients from the client list')(
-          Action(help='Remove host(s) from client list', callback=shell.remove_clients),
-        ),
-      ),
-    ),
-    command=Node(help='Module to interact with remote shells')(
-      exists=Node(help='Check if a command exists')(
-        command=Variable(pattern=r'.*')(
-          Action(help='Command name', callback=shell.command.exists),
-        ),
-      ),
-      run=Node(help='Run a command')(
-        command=Variable(pattern=r'.*')(
-          Action(help='Full command', callback=shell.command.run),
-        ),
-      ),
-      shell=Node(help='Run a command shell')(
-        Action(help='Run a command shell', callback=shell.command.shell),
-      ),
-    ),
-  )
-  interact(grammar, application='funcshell')
+  shell.run()

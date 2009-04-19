@@ -2,7 +2,7 @@
 
 import cmd
 
-class CommandShell(cmd.Cmd):
+class EasyShell(cmd.Cmd):
   def __init__(self, callback):
     """Setup shell."""
     cmd.Cmd.__init__(self)
@@ -25,3 +25,4 @@ class CommandShell(cmd.Cmd):
   def do_help(self, line): self.help_exit()
   def help_help(self): pass
   def emptyline(self): pass
+  def run(self): self.cmdloop()
