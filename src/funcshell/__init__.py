@@ -86,7 +86,7 @@ class Shell(object):
       except AttributeError:
         print '%s does not have a register function.' % module.__name__
 
-  def exit():
+  def exit(self):
     sys.exit(0)
 
   def add_clients(self, clients_add):
