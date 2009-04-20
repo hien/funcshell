@@ -11,7 +11,7 @@ setup(
   platforms='Platform Independent',
   author='Silas Sewell',
   author_email='silas@sewell.ch',
-  url='http://code.google.com/p/silassewell/wiki/funcshell',
+  url='http://github.com/silas/funcshell',
   download_url='http://silassewell.googlecode.com/files/funcshell-0.0.1.tar.gz',
   packages=['funcshell'],
   entry_points = {

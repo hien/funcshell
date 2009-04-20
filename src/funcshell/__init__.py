@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import cly
+import glob
+import os
 import sys
 try:
   import func.overlord.client as fc
@@ -8,7 +10,6 @@ try:
 except IOError:
   print 'You do not have the required permissions to run funcshell.'
   sys.exit(1)
-from funcshell import modules
 
 class Client(object):
   def __init__(self):
@@ -45,7 +46,7 @@ class Shell(object):
     self.client = Client()
     self.grammar = cly.Grammar()
     self._grammar()
-    self.command = modules.Command(self.client, self.grammar)
+    self._modules()
 
   def _grammar(self):
     re_hostname = r'(?:@?[a-zA-Z0-9*]+[a-zA-Z0-9-.*;]*){1,}'
@@ -72,6 +73,18 @@ class Shell(object):
         ),
       ),
     )
+
+  def _modules(self):
+    module_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'modules')
+    module_list_str = glob.glob('%s/[!_]*.py*' % module_dir)
+    module_list_str = list(set([os.path.basename(x).split('.py')[0] for x in module_list_str]))
+    module_list = __import__('funcshell.modules', globals(), locals(), module_list_str)
+    for module_str in module_list_str:
+      module = getattr(module_list, module_str)
+      try:
+        module.register(self)
+      except AttributeError:
+        print '%s does not have a register function.' % module.__name__
 
   def exit():
     sys.exit(0)

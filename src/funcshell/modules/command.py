@@ -1,24 +1,9 @@
 import cly
+from __init__ import BaseModule
 from func.CommonErrors import Func_Client_Exception
 from funcshell.utils import EasyShell
 
-class Module(object):
-  def __init__(self, client, grammar):
-    self.client = client
-    self.grammar = grammar
-    self._grammar()
-
-  def header(self, text):
-    return '==> %s <==' % text
-
-  def is_error(self, result):
-    return isinstance(result, list) and result[0] == 'REMOTE_ERROR'
-
-  def error(self, host, result):
-    print self.header(host)
-    print result[2]
-
-class Command(Module):
+class Command(BaseModule):
   def _grammar(self):
     self.grammar(
       command=cly.Node(help='Module to interact with remote shells')(
@@ -76,3 +61,6 @@ class Command(Module):
       print ''
     except Func_Client_Exception, e:
       print 'Func exception: %s' % e
+
+def register(shell):
+  shell.command = Command(shell.client, shell.grammar)

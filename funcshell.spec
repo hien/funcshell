@@ -7,8 +7,8 @@ Summary:        A CLI interface to Func
 
 Group:          Development/Languages
 License:        MIT
-URL:            http://code.google.com/p/silassewell/wiki/funcshell
-Source0:        http://silassewell.googlecode.com/files/%{name}-%{version}.tar.gz
+URL:            http://github.com/silas/funcshell
+Source0:        http://cloud.github.com/downloads/silas/funcshell/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
