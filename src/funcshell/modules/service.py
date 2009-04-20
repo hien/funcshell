@@ -7,30 +7,22 @@ from funcshell.modules import BaseModule
 class Service(BaseModule):
   def _grammar(self):
     self.grammar(
-      service=cly.Node(help='Manage services.')(
-        start=cly.Node(help='Start service')(
-          service=cly.Variable(pattern=r'.*')(
-            cly.Action(help='Service name', callback=self.start),
+      service=cly.Node(help='Manage services')(
+        service=cly.Variable(pattern=r'\S+', help='Service name')(
+          reload=cly.Node(help='Reload service')(
+            cly.Action(help='Reload service', callback=self.reload),
           ),
-        ),
-        stop=cly.Node(help='Stop service')(
-          service=cly.Variable(pattern=r'.*')(
-            cly.Action(help='Service name', callback=self.stop),
+          restart=cly.Node(help='Restart service')(
+            cly.Action(help='Restart serivce', callback=self.restart),
           ),
-        ),
-        restart=cly.Node(help='Restart service')(
-          service=cly.Variable(pattern=r'.*')(
-            cly.Action(help='Service name', callback=self.restart),
+          start=cly.Node(help='Start service')(
+            cly.Action(help='Start service', callback=self.start),
           ),
-        ),
-        reload=cly.Node(help='Reload service')(
-          service=cly.Variable(pattern=r'.*')(
-            cly.Action(help='Service name', callback=self.reload),
+          status=cly.Node(help='Status service')(
+            cly.Action(help='Get service status', callback=self.status),
           ),
-        ),
-        status=cly.Node(help='Get service status')(
-          service=cly.Variable(pattern=r'.*')(
-            cly.Action(help='Service name', callback=self.status),
+          stop=cly.Node(help='Stop service')(
+            stop=cly.Action(help='Stop service', callback=self.stop),
           ),
         ),
         get=cly.Node(help='Get information about services')(
@@ -65,7 +57,11 @@ class Service(BaseModule):
       for host, result in result_list.items():
         if not self.is_error(result):
           print self.header(host)
-          cly.console.print_table(['Service', 'Levels'], result, expand_to_fit=False)
+          reformat_result = []
+          for name, levels in result:
+            levels.insert(0, name)
+            reformat_result.append(levels)
+          self.tabularize(['Service', 'Levels', '', '', '', '', '', ''], reformat_result)
         else:
           self.error(host, result)
     except Func_Client_Exception, e:
@@ -77,7 +73,7 @@ class Service(BaseModule):
       for host, result in result_list.items():
         if not self.is_error(result):
           print self.header(host)
-          cly.console.print_table(['Service', 'Status'], result, expand_to_fit=False)
+          self.tabularize(['Service', 'Status'], result)
         else:
           self.error(host, result)
     except Func_Client_Exception, e:

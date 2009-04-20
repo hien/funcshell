@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import cly
 import inspect
 
 class MethodWrapper(object):
@@ -18,7 +19,7 @@ class MethodWrapper(object):
 
 class BaseModule(object):
   def __init__(self, client, grammar):
-    self.special_methods = ['header', 'is_error', 'error']
+    self.special_methods = ['error', 'header', 'is_error', 'tabularize']
     self.client = client
     self.grammar = grammar
     self._grammar()
@@ -28,6 +29,9 @@ class BaseModule(object):
     if inspect.ismethod(value) and not name.startswith('_') and name not in self.special_methods:
       return MethodWrapper(self, value)
     return value
+
+  def tabularize(self, header, content):
+    cly.console.print_table(header, content, auto_format=('', '', ''), expand_to_fit=False)
 
   def error(self, host, result):
     print self.header(host)
