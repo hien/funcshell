@@ -37,7 +37,6 @@ rm -rf %{buildroot}
 %doc LICENSE
 %{_bindir}/%{name}
 %{python_sitelib}/%{name}
-%{python_sitelib}/%{name}-%{version}-*.egg-info
 
 %changelog
 * Sun Apr 12 2009 Silas Sewell <silas@sewell.ch> - 0.0.1-1
