@@ -7,7 +7,7 @@ Summary:        A shell interface to Func
 
 Group:          Development/Languages
 License:        MIT
-URL:            http://github.com/silas/funcshell
+URL:            http://www.silassewell.com/projects/funcshell
 Source0:        http://cloud.github.com/downloads/silas/funcshell/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
