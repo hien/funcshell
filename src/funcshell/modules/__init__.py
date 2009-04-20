@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import inspect
 
 class MethodWrapper(object):
@@ -6,7 +8,7 @@ class MethodWrapper(object):
     self.method = method
 
   def __call__(self, *args, **kwargs):
-    if self.module.client.list:
+    if self.module.client.ready():
       try:
         self.method(*args, **kwargs)
       except Exception, e:
@@ -27,12 +29,12 @@ class BaseModule(object):
       return MethodWrapper(self, value)
     return value
 
+  def error(self, host, result):
+    print self.header(host)
+    print result[2]
+
   def header(self, text):
     return '==> %s <==' % text
 
   def is_error(self, result):
     return isinstance(result, list) and result[0] == 'REMOTE_ERROR'
-
-  def error(self, host, result):
-    print self.header(host)
-    print result[2]

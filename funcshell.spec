@@ -3,7 +3,7 @@
 Name:           funcshell
 Version:        0.0.1
 Release:        1%{?dist}
-Summary:        A CLI interface to Func
+Summary:        A shell interface to Func
 
 Group:          Development/Languages
 License:        MIT
@@ -13,13 +13,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 BuildRequires:  python-devel
-BuildRequires:  python-setuptools
 Requires:       func
 Requires:       python-cly
-Requires:       python-setuptools
 
 %description
-funchshell is a CLI interface to Func.
+funchshell is a shell interface to Func.
 
 %prep
 %setup -q

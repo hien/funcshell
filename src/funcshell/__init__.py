@@ -18,12 +18,6 @@ class Client(object):
   def add(self, client_list):
     self.list.update(self.minions(client_list))
 
-  def remove(self, client_list):
-    self.list.difference_update(self.minions(client_list))
-
-  def set(self, client_list):
-    self.list = set(self.minions(client_list))
-
   def get(self):
     client_list = list(self.list)
     client_list.sort()
@@ -32,14 +26,20 @@ class Client(object):
   def join(self, join_str=';'):
     return join_str.join(self.get())
 
+  def minions(self, clients_glob):
+    return fc.Minions(clients_glob).get_all_hosts()
+
   def overlord(self, hosts=None):
     return fc.Overlord(self.join())
 
   def ready(self):
     return bool(self.list)
 
-  def minions(self, clients_glob):
-    return fc.Minions(clients_glob).get_all_hosts()
+  def remove(self, client_list):
+    self.list.difference_update(self.minions(client_list))
+
+  def set(self, client_list):
+    self.list = set(self.minions(client_list))
 
 class Shell(object):
   def __init__(self):
@@ -89,18 +89,18 @@ class Shell(object):
   def exit():
     sys.exit(0)
 
+  def add_clients(self, clients_add):
+    self.client.add(clients_add[2:])
+
   def get_clients(self):
     if self.client.ready():
       print self.client.join('\n')
 
-  def set_clients(self, clients_set):
-    self.client.set(clients_set)
-
-  def add_clients(self, clients_add):
-    self.client.add(clients_add[2:])
-
   def remove_clients(self, clients_remove):
     self.client.remove(clients_remove[2:])
+
+  def set_clients(self, clients_set):
+    self.client.set(clients_set)
 
   def run(self):
     cly.interact(self.grammar, application='funcshell')

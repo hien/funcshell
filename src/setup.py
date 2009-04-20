@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from distutils.core import setup
 
 setup(
   name='funcshell',
@@ -13,10 +13,6 @@ setup(
   author_email='silas@sewell.ch',
   url='http://github.com/silas/funcshell',
   download_url='http://silassewell.googlecode.com/files/funcshell-0.0.1.tar.gz',
+  scripts = ['scripts/funcshell'],
   packages=['funcshell'],
-  entry_points = {
-    'console_scripts': [
-      'funcshell = funcshell:main',
-    ],
-  },
 )   

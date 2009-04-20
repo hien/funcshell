@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import cly
-from __init__ import BaseModule
 from func.CommonErrors import Func_Client_Exception
+from funcshell.modules import BaseModule
 from funcshell.utils import EasyShell
 
 class Command(BaseModule):
