@@ -8,7 +8,7 @@ from funcshell.utils import EasyShell
 class Command(BaseModule):
   def _grammar(self):
     self.grammar(
-      command=cly.Node(help='Module to interact with remote shells')(
+      command=cly.Node(help='Interact with remote shells')(
         exists=cly.Node(help='Check if a command exists')(
           command=cly.Variable(pattern=r'.*')(
             cly.Action(help='Command name', callback=self.exists),

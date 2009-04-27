@@ -12,6 +12,6 @@ setup(
   author='Silas Sewell',
   author_email='silas@sewell.ch',
   url='http://www.silassewell.com/projects/funcshell',
-  scripts = ['scripts/funcshell'],
-  packages=['funcshell'],
+  scripts=['scripts/funcshell'],
+  packages=['funcshell', 'funcshell.modules'],
 )   
