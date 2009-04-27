@@ -40,5 +40,5 @@ rm -rf %{buildroot}
 %{python_sitelib}/%{name}-%{version}-*.egg-info
 
 %changelog
-* Sun Apr 12 2009 Silas Sewell <silas@sewell.ch> - 0.0.1-1
+* Sun Apr 26 2009 Silas Sewell <silas@sewell.ch> - 0.0.1-1
 - Initial build
