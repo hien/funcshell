@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import cmd
 
 class EasyShell(cmd.Cmd):

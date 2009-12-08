@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
-import funcshell
+from funcshell import Shell
 
-funcshell.main()
+if __name__ == '__main__':
+  shell = Shell()
+  shell.run()

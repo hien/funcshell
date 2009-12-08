@@ -6,6 +6,7 @@ from funcshell.modules import BaseModule
 from funcshell.utils import EasyShell
 
 class Command(BaseModule):
+
   def _grammar(self):
     self.grammar(
       command=cly.Node(help='Interact with remote shells')(
@@ -27,7 +28,7 @@ class Command(BaseModule):
 
   def exists(self, command):
     try:
-      result_list = self.client.overlord().command.exists(command)
+      result_list = self.wrap(self.client.overlord().command.exists(command))
       for host, result in result_list.items():
         if not self.is_error(result):
           print self.header(host)
@@ -39,7 +40,7 @@ class Command(BaseModule):
 
   def run(self, command):
     try:
-      result_list = self.client.overlord().command.run(command)
+      result_list = self.wrap(self.client.overlord().command.run(command))
       for host, result in result_list.items():
         if not self.is_error(result):
           code, stdin, stderr = result[0], result[1].strip(), result[2].strip()

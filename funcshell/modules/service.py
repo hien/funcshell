@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import cly
 from func.CommonErrors import Func_Client_Exception
 from funcshell.modules import BaseModule
 
 class Service(BaseModule):
+
   def _grammar(self):
     self.grammar(
       service=cly.Node(help='Manage services')(
@@ -38,7 +37,7 @@ class Service(BaseModule):
 
   def _generic(self, option, service):
     try:
-      result_list = getattr(self.client.overlord().service, option)(service)
+      result_list = self.wrap(getattr(self.client.overlord().service, option)(service))
       for host, result in result_list.items():
         if not self.is_error(result):
           print self.header(host)
@@ -53,7 +52,7 @@ class Service(BaseModule):
 
   def get_enabled(self):
     try:
-      result_list = self.client.overlord().service.get_enabled()
+      result_list = self.wrap(self.client.overlord().service.get_enabled())
       for host, result in result_list.items():
         if not self.is_error(result):
           print self.header(host)
@@ -69,7 +68,7 @@ class Service(BaseModule):
 
   def get_running(self):
     try:
-      result_list = self.client.overlord().service.get_running()
+      result_list = self.wrap(self.client.overlord().service.get_running())
       for host, result in result_list.items():
         if not self.is_error(result):
           print self.header(host)
