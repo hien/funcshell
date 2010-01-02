@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import cly
 import inspect
 import time

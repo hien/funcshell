@@ -1,6 +1,7 @@
 import cmd
 
 class EasyShell(cmd.Cmd):
+
   def __init__(self, callback, prompt='> '):
     cmd.Cmd.__init__(self)
     self.callback = callback

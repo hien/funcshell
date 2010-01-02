@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import cly
 from func.CommonErrors import Func_Client_Exception
 from funcshell.modules import BaseModule

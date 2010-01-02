@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
   name='funcshell',
-  version='0.1',
+  version='0.0.1',
   description='A shell interface to Func',
   long_description='funchshell is a shell interface to Func.',
   license='MIT',
