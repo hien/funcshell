@@ -1,7 +1,9 @@
+import copy
 import glob
 import os
 import sys
 import cly
+import cly.console
 try:
     import func.overlord.client as fc
     from func import jobthing
@@ -9,6 +11,9 @@ try:
 except IOError:
     print 'You do not have the required permissions to run funcshell.'
     sys.exit(1)
+
+class Error(Exception): pass
+class ChangeError(Error): pass
 
 class Client(object):
 
@@ -23,7 +28,10 @@ class Client(object):
         self.list = set()
 
     def add(self, client_list):
+        old_list_len = len(self.list)
         self.list.update(self.minions(client_list))
+        if old_list_len == len(self.list):
+            raise ChangeError('No clients added.')
 
     def get(self):
         client_list = list(self.list)
@@ -47,10 +55,15 @@ class Client(object):
         return bool(self.list)
 
     def remove(self, client_list):
+        old_list_len = len(self.list)
         self.list.difference_update(self.minions(client_list))
+        if old_list_len == len(self.list):
+            raise ChangeError('No clients removed.')
 
     def set(self, client_list):
         self.list = set(self.minions(client_list))
+        if not self.list:
+            raise ChangeError('Set clients list empty.')
 
 class Shell(object):
 
@@ -115,7 +128,7 @@ class Shell(object):
             try:
                 module.register(self)
             except AttributeError:
-                print '%s does not have a register function.' % module.__name__
+                cly.console.cerror('%s does not have a register function.' % module.__name__)
 
     def exit(self):
         sys.exit(0)
@@ -134,17 +147,26 @@ class Shell(object):
         print 'async state is %s.' % state
 
     def add_clients(self, clients_add):
-        self.client.add(clients_add[2:])
+        try:
+            self.client.add(clients_add[2:])
+        except ChangeError, error:
+            cly.console.cwarning(error)
 
     def get_clients(self):
         if self.client.ready():
             print self.client.join('\n')
 
     def remove_clients(self, clients_remove):
-        self.client.remove(clients_remove[2:])
+        try:
+            self.client.remove(clients_remove[2:])
+        except ChangeError, error:
+            cly.console.cwarning(error)
 
     def set_clients(self, clients_set):
-        self.client.set(clients_set)
+        try:
+            self.client.set(clients_set)
+        except ChangeError, error:
+            cly.console.cwarning(error)
 
     def get_threads(self):
         print 'Thread count is %s.' % self.client.threads
