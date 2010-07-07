@@ -23,8 +23,6 @@ To get usage help just type the "?" key at the funcshell prompt.
 
 This work is licensed under the MIT License (see the LICENSE file).
 
-### Flattr
-
 [![Flattr this][flattr-img]][flattr]
 
 [flattr]: http://flattr.com/thing/33168/Funcshell
