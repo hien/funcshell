@@ -26,6 +26,7 @@ class Client(object):
         self.async = False
         self.threads = 1
         self.list = set()
+        self.timeout = fc.DEFAULT_TIMEOUT
 
     def add(self, client_list):
         old_list_len = len(self.list)
@@ -45,10 +46,11 @@ class Client(object):
         return fc.Minions(clients_glob).get_all_hosts()
 
     def overlord(self):
+        options = {'timeout': self.timeout}
         if self.async:
-            self._overlord = fc.Overlord(self.join(), async=self.async, nforks=self.threads)
-        else:
-            self._overlord = fc.Overlord(self.join())
+            options['async'] = self.async
+            options['nforks'] = self.threads
+        self._overlord = fc.Overlord(self.join(), **options)
         return self._overlord
 
     def ready(self):
@@ -89,6 +91,9 @@ class Shell(object):
                 threads=cly.Node(help='Get thread count')(
                     cly.Action(help='Get thread count', callback=self.get_threads),
                 ),
+                timeout=cly.Node(help='Get timeout')(
+                    cly.Action(help='Get timeout', callback=self.get_timeout),
+                ),
             ),
             set=cly.Node(help='Define settings for the current session')(
                 async=cly.Node(help='Enable or disable async mode')(
@@ -113,6 +118,11 @@ class Shell(object):
                 threads=cly.Node(help='Set thread count')(
                     thread_count=cly.Variable(pattern=r'([0-9]){1,}', help='Set thread count')(
                         cly.Action(help='Set thread count', callback=self.set_threads),
+                    ),
+                ),
+                timeout=cly.Node(help='Set timeout')(
+                    timeout=cly.Variable(pattern=r'([0-9]){1,}', help='Set client timeout')(
+                        cly.Action(help='Set timeout', callback=self.set_timeout),
                     ),
                 ),
             ),
@@ -171,8 +181,20 @@ class Shell(object):
     def get_threads(self):
         print 'Thread count is %s.' % self.client.threads
 
+    def get_timeout(self):
+        if self.client.timeout is None:
+            print 'Timeout is set to the func default.'
+        else:
+            print 'Timeout is %s seconds.' % self.client.timeout
+
     def set_threads(self, thread_count):
         self.client.threads = int(thread_count)
+
+    def set_timeout(self, timeout):
+        timeout = int(timeout)
+        if timeout <= 0:
+            timeout = None
+        self.client.timeout = timeout
 
     def run(self):
         cly.interact(self.grammar, application='funcshell')
