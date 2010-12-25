@@ -22,8 +22,3 @@ To get usage help just type the "?" key at the funcshell prompt.
 ### License
 
 This work is licensed under the MIT License (see the LICENSE file).
-
-[![Flattr this][flattr-img]][flattr]
-
-[flattr]: http://flattr.com/thing/33168/Funcshell
-[flattr-img]: http://api.flattr.com/button/button-compact-static-100x17.png
